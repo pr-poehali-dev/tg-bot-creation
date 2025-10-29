@@ -1,0 +1,38 @@
+{
+  "tests": [
+    {
+      "name": "Handle OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": "",
+      "bodyMatcher": "exact"
+    },
+    {
+      "name": "Handle webhook without token",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "update_id": 123456,
+        "message": {
+          "message_id": 1,
+          "from": {
+            "id": 12345,
+            "first_name": "Test"
+          },
+          "chat": {
+            "id": 12345,
+            "type": "private"
+          },
+          "date": 1234567890,
+          "text": "/help"
+        }
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "ok": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
