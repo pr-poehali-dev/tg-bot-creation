@@ -1,4 +1,5 @@
 {
+  "payment-webhook": "https://functions.poehali.dev/aa03d64b-1224-4c72-8d63-8ab6b8ed6834",
   "setup-bot": "https://functions.poehali.dev/3c1ed3b2-273a-4f14-8183-91246b6b13e6",
   "telegram-bot": "https://functions.poehali.dev/bd28a071-1d18-421e-8b3f-f39c66679732"
 }

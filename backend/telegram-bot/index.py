@@ -74,7 +74,7 @@ def send_message_with_button(bot_token: str, chat_id: int, text: str):
     import urllib.request
     import urllib.parse
     
-    web_app_url = "https://rocketpay.poehali.app"
+    web_app_url = "https://t-p73518846-tg-bot-creation.poehali.app"
     
     keyboard = {
         'inline_keyboard': [[
