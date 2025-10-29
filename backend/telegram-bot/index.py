@@ -34,18 +34,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 text = message.get('text', '')
                 
                 if text == '/start':
-                    bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+                    bot_token = '8195491451:AAGiGhu99Nx8Yv5kzw6IbUsKC7Us0896smo'
                     
-                    if bot_token:
-                        response_text = (
-                            "🚀 Добро пожаловать в RocketPay!\n\n"
-                            "🎁 Бонус 1000₽ на старте\n"
-                            "💰 Играй в Ракетку и выигрывай\n"
-                            "💳 Мгновенный вывод средств\n\n"
-                            "Нажми кнопку ниже, чтобы начать! 👇"
-                        )
-                        
-                        send_message_with_button(bot_token, chat_id, response_text)
+                    response_text = (
+                        "🚀 Добро пожаловать в RocketPay!\n\n"
+                        "🎁 Бонус 1000₽ на старте\n"
+                        "💰 Играй в Ракетку и выигрывай\n"
+                        "💳 Мгновенный вывод средств\n\n"
+                        "Нажми кнопку ниже, чтобы начать! 👇"
+                    )
+                    
+                    send_message_with_button(bot_token, chat_id, response_text)
             
             return {
                 'statusCode': 200,
