@@ -10,10 +10,12 @@ type Section = 'home' | 'casino' | 'balance' | 'withdraw' | 'referral' | 'about'
 export default function Index() {
   const [activeSection, setActiveSection] = useState<Section>('home');
   const [balance, setBalance] = useState(1000);
+  const [realBalance, setRealBalance] = useState(0);
   const [bet, setBet] = useState(100);
   const [isPlaying, setIsPlaying] = useState(false);
   const [multiplier, setMultiplier] = useState(1.0);
   const [gameResult, setGameResult] = useState<'win' | 'lose' | null>(null);
+  const [wagerProgress, setWagerProgress] = useState(0);
 
   const quickBets = [100, 500, 1000, 5000, 10000, 100000];
 
@@ -212,9 +214,33 @@ export default function Index() {
 
           <TabsContent value="balance" className="space-y-4 animate-fade-in">
             <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-secondary/20 border-primary/30 glow">
-              <p className="text-sm text-muted-foreground mb-2">Ваш баланс</p>
+              <p className="text-sm text-muted-foreground mb-2">Общий баланс</p>
               <p className="text-5xl font-bold text-primary text-glow">{balance}₽</p>
+              <div className="flex justify-center gap-6 mt-4 pt-4 border-t border-primary/20">
+                <div>
+                  <p className="text-xs text-muted-foreground">Бонусный</p>
+                  <p className="text-xl font-bold text-secondary">{balance - realBalance}₽</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Реальный</p>
+                  <p className="text-xl font-bold text-primary">{realBalance}₽</p>
+                </div>
+              </div>
             </Card>
+
+            {realBalance < 1000 && (
+              <Card className="p-4 bg-primary/10 border-primary/30">
+                <div className="flex items-start gap-3">
+                  <Icon name="Gift" size={20} className="text-primary shrink-0 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-bold text-primary mb-1">🎁 Бонус 1000₽</p>
+                    <p className="text-xs text-muted-foreground">
+                      Бесплатные деньги для игры! Пополните баланс на 1000₽ и отыграйте вейджер x22, чтобы разблокировать вывод.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            )}
 
             <Card className="p-6 space-y-4 border-primary/20">
               <h3 className="font-bold text-lg text-primary">История операций</h3>
@@ -236,35 +262,103 @@ export default function Index() {
           </TabsContent>
 
           <TabsContent value="withdraw" className="space-y-4 animate-fade-in">
+            {realBalance < 1000 && (
+              <Card className="p-6 bg-gradient-to-br from-destructive/20 to-destructive/10 border-destructive/30">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Icon name="AlertCircle" size={20} className="text-destructive" />
+                    <h3 className="font-bold text-destructive">Вывод недоступен</h3>
+                  </div>
+                  <p className="text-sm">
+                    Для вывода необходимо пополнить баланс минимум на <span className="font-bold">1000₽</span> и отыграть вейджер x22
+                  </p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span>Прогресс отыгрыша</span>
+                      <span className="font-bold">{wagerProgress}/22000₽</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-300"
+                        style={{width: `${Math.min((wagerProgress / 22000) * 100, 100)}%`}}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            )}
+
             <Card className="p-6 space-y-4 border-primary/20">
-              <h3 className="font-bold text-lg text-primary">Вывод средств</h3>
+              <h3 className="font-bold text-lg text-primary">Пополнение баланса</h3>
               <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Сумма вывода</label>
-                  <input
-                    type="number"
-                    placeholder="Введите сумму"
-                    className="w-full p-3 rounded-lg bg-muted border border-border focus:border-primary focus:outline-none"
-                  />
+                <div className="p-4 bg-primary/10 rounded-lg border border-primary/30">
+                  <p className="text-sm text-center mb-3">Переведите любую сумму через СБП на номер:</p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value="+7 906 989 22 67"
+                      readOnly
+                      className="flex-1 p-3 rounded-lg bg-muted border border-border text-center font-bold text-lg"
+                    />
+                    <Button 
+                      variant="outline"
+                      className="shrink-0 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                      onClick={() => {
+                        navigator.clipboard.writeText('89069892267');
+                        toast.success('Номер скопирован!');
+                      }}
+                    >
+                      <Icon name="Copy" size={20} />
+                    </Button>
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground mt-3">
+                    Озон Банк • СБП • Мгновенное зачисление
+                  </p>
                 </div>
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Номер карты</label>
-                  <input
-                    type="text"
-                    placeholder="0000 0000 0000 0000"
-                    className="w-full p-3 rounded-lg bg-muted border border-border focus:border-primary focus:outline-none"
-                  />
+
+                <div className="p-4 bg-secondary/10 rounded-lg border border-secondary/30">
+                  <div className="flex items-start gap-3">
+                    <Icon name="Info" size={20} className="text-secondary shrink-0 mt-0.5" />
+                    <div className="text-xs space-y-1">
+                      <p>После перевода баланс пополнится автоматически в течение 1 минуты</p>
+                      <p className="text-muted-foreground">Минимальная сумма пополнения: 100₽</p>
+                    </div>
+                  </div>
                 </div>
-                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-6 glow">
-                  <Icon name="Send" size={20} className="mr-2" />
-                  Вывести средства
-                </Button>
-                <p className="text-xs text-center text-muted-foreground">
-                  Минимальная сумма вывода: 500₽<br />
-                  Комиссия: 0%
-                </p>
               </div>
             </Card>
+
+            {realBalance >= 1000 && wagerProgress >= 22000 && (
+              <Card className="p-6 space-y-4 border-primary/20">
+                <h3 className="font-bold text-lg text-primary">Вывод средств</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Сумма вывода</label>
+                    <input
+                      type="number"
+                      placeholder="Введите сумму"
+                      className="w-full p-3 rounded-lg bg-muted border border-border focus:border-primary focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Номер карты</label>
+                    <input
+                      type="text"
+                      placeholder="0000 0000 0000 0000"
+                      className="w-full p-3 rounded-lg bg-muted border border-border focus:border-primary focus:outline-none"
+                    />
+                  </div>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-6 glow">
+                    <Icon name="Send" size={20} className="mr-2" />
+                    Вывести средства
+                  </Button>
+                  <p className="text-xs text-center text-muted-foreground">
+                    Минимальная сумма вывода: 500₽<br />
+                    Комиссия: 0%
+                  </p>
+                </div>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="referral" className="space-y-4 animate-fade-in">
